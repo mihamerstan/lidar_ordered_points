@@ -40,7 +40,7 @@ class UNet(nn.Module):
 		# TO DO: add image_channels, other arguments
 		parser.add_argument("--bias", action='store_true', help="use residual bias")
 		parser.add_argument("--residual", action='store_true', help="use residual connection")
-		parser.add_argument("--in_channels",default=7, help="number of input features")
+		parser.add_argument("--in_channels",default=6, help="number of input features")
 		parser.add_argument("--batch_norm",default=False, help="Whether or not to use batchnorm layers")
 	@classmethod
 	def build_model(cls, args):

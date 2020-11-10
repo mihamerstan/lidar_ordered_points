@@ -119,10 +119,10 @@ def main(args):
 
 	## Load the pts files
 	# Loads as a list of numpy arrays
-	scan_line_tensor = torch.load('../lidar_data/32_32/'+'scan_line_tensor.pts')
-	train_idx_list = torch.load('../lidar_data/32_32/'+'train_idx_list.pts')
-	valid_idx_list = torch.load('../lidar_data/32_32/'+'valid_idx_list.pts')
-	sc = torch.load('../lidar_data/32_32/'+'sc.pts')
+	scan_line_tensor = torch.load(args.data_path+'scan_line_tensor.pts')
+	train_idx_list = torch.load(args.data_path+'train_idx_list.pts')
+	valid_idx_list = torch.load(args.data_path+'valid_idx_list.pts')
+	sc = torch.load(args.data_path+'sc.pts')
 
 	# Dataloaders
 	train_dataset = LidarLstmDataset(scan_line_tensor,train_idx_list,args.seq_len, args.mask_pts_per_seq)
@@ -225,7 +225,7 @@ def get_args():
 	parser = argparse.ArgumentParser(allow_abbrev=False)
 
 	# Add data arguments
-	parser.add_argument("--data-path", default="data", help="path to data directory")
+	parser.add_argument("--data-path", default="../lidar_data/32_32/", help="path to data directory")
 	parser.add_argument("--dataset", default="masked_pwc", help="masked training data for generator")
 	parser.add_argument("--batch-size", default=64, type=int, help="train batch size")
 	parser.add_argument("--num_scan_lines", default=1000, type=int, help="number of scan lines used to generate data")
