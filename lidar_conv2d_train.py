@@ -128,8 +128,8 @@ def main(args):
 	train_dataset = LidarLstmDataset(scan_line_tensor,train_idx_list,args.seq_len, args.mask_pts_per_seq)
 	valid_dataset = LidarLstmDataset(scan_line_tensor,valid_idx_list,args.seq_len, args.mask_pts_per_seq)
 
-	train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, num_workers=4, shuffle=True)
-	valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=32, num_workers=4, shuffle=True)
+	train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, num_workers=4, shuffle=True)
+	valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, num_workers=4, shuffle=True)
 
 	# Track moving average of loss values
 	train_meters = {name: utils.RunningAverageMeter(0.98) for name in (["train_loss"])}
@@ -227,7 +227,7 @@ def get_args():
 	# Add data arguments
 	parser.add_argument("--data-path", default="../lidar_data/32_32/", help="path to data directory")
 	parser.add_argument("--dataset", default="masked_pwc", help="masked training data for generator")
-	parser.add_argument("--batch-size", default=64, type=int, help="train batch size")
+	parser.add_argument("--batch-size", default=32, type=int, help="train batch size")
 	parser.add_argument("--num_scan_lines", default=1000, type=int, help="number of scan lines used to generate data")
 	parser.add_argument("--seq_len", default=32, type=int, help="side length of the patches")
 	parser.add_argument("--scan_line_gap_break", default=7000, type=int, help="threshold over which scan_gap indicates a new scan line")
