@@ -9,7 +9,7 @@ from models import PartialConv2d, PartialConvTranspose2d
 import math
 
 ### 1D PartialConv U-NET
-@register_model("lidar_unet2d")
+@register_model("lidar_unet2d_old")
 class UNet(nn.Module):
 	"""UNet as defined in https://arxiv.org/abs/1805.07709"""
 	def __init__(self, bias, in_channels=7, out_channels=3, residual_connection = False, batch_norm=False):
@@ -31,14 +31,17 @@ class UNet(nn.Module):
 		self.dropout = nn.Dropout(p=0.1)
 		self.residual_connection = residual_connection;
 		
-		self.bn1 = nn.BatchNorm2d(32)
-		self.bn2 = nn.BatchNorm2d(32)
-		self.bn3 = nn.BatchNorm2d(64)
-		self.bn4 = nn.BatchNorm2d(64)
-		self.bn5 = nn.BatchNorm2d(64)
-		self.bn6 = nn.BatchNorm2d(64)
-		self.bn7 = nn.BatchNorm2d(64)
-		self.bn8 = nn.BatchNorm2d(32)
+		self.bn32 = nn.BatchNorm2d(32)
+		self.bn64 = nn.BatchNorm2d(64)
+		
+		# self.bn1 = nn.BatchNorm2d(32)
+		# self.bn2 = nn.BatchNorm2d(32)
+		# self.bn3 = nn.BatchNorm2d(64)
+		# self.bn4 = nn.BatchNorm2d(64)
+		# self.bn5 = nn.BatchNorm2d(64)
+		# self.bn6 = nn.BatchNorm2d(64)
+		# self.bn7 = nn.BatchNorm2d(64)
+		# self.bn8 = nn.BatchNorm2d(32)
 
 	@staticmethod
 	def add_args(parser):
@@ -65,13 +68,13 @@ class UNet(nn.Module):
 		prelu, mask = self.conv1(x, mask_in)
 		out = F.relu(prelu)
 		if self.batch_norm:
-			out = self.bn1(out)
+			out = self.bn32(out)
 		# Dropout layer
 		# out = self.dropout(out)
 		prelu, mask_saved = self.conv2(out, mask)
 		out_saved = F.relu(prelu)
 		if self.batch_norm:
-			out = self.bn2(out)
+			out = self.bn32(out)
 
 		# Dropout layer
 		# out_saved = self.dropout(out_saved)
@@ -79,7 +82,7 @@ class UNet(nn.Module):
 		prelu, mask = self.conv3(out_saved, mask_saved)
 		out = F.relu(prelu)
 		if self.batch_norm:
-			out = self.bn3(out)
+			out = self.bn64(out)
 
 		# Dropout layer
 		# out = self.dropout(out)
@@ -87,7 +90,7 @@ class UNet(nn.Module):
 		prelu, mask = self.conv4(out, mask)
 		out = F.relu(prelu)
 		if self.batch_norm:
-			out = self.bn4(out)
+			out = self.bn64(out)
 
 		# Dropout layer
 		# out = self.dropout(out)
@@ -95,7 +98,7 @@ class UNet(nn.Module):
 		prelu, mask = self.conv5(out, mask)
 		out = F.relu(prelu)
 		if self.batch_norm:
-			out = self.bn5(out)
+			out = self.bn64(out)
 
 		# Dropout layer
 		# out = self.dropout(out)
@@ -103,7 +106,7 @@ class UNet(nn.Module):
 		prelu, mask = self.conv6(out, mask)
 		out = F.relu(prelu)
 		if self.batch_norm:
-			out = self.bn6(out)
+			out = self.bn64(out)
 
 		# out = F.relu(self.conv7(out)) # THE TRANSPOSE
 
@@ -118,7 +121,7 @@ class UNet(nn.Module):
 		# Expand the mask [32,1,25] back to [32,1,50]
 		# mask = mask.repeat_interleave(2,dim=2)		
 		if self.batch_norm:
-			out = self.bn7(out)
+			out = self.bn64(out)
 
 		# Dropout layer
 		# out = self.dropout(out)
@@ -126,7 +129,7 @@ class UNet(nn.Module):
 		prelu, mask = self.conv8(out,mask)
 		out = F.relu(prelu)
 		if self.batch_norm:
-			out = self.bn8(out)
+			out = self.bn32(out)
 
 		# Dropout layer
 		# out = self.dropout(out)

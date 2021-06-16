@@ -86,8 +86,7 @@ def create_scan_line_tensor(file_dir=file_dir,filename=filename,\
 	# miss_pts_before is the count of missing points before the point in question (scan gap / 5 -1)
 	first_return_df['miss_pts_before'] = round((first_return_df['scan_gap']/-5)-1)
 	first_return_df['miss_pts_before'] = [max(0,pt) for pt in first_return_df['miss_pts_before']]
-	print("miss pts min: ", first_return_df['miss_pts_before'].min())
-	print("miss pts max: ", first_return_df['miss_pts_before'].max())
+
 	# Add 'mask' column, set to one by default
 	first_return_df['mask'] = [1]*first_return_df.shape[0]
 
@@ -124,14 +123,14 @@ def create_scan_line_tensor(file_dir=file_dir,filename=filename,\
 	starting_idx = [x for x in starting_idx if str(x) != 'nan']
 
 	# Create Tensor
-	scan_line_tensor = torch.randn([len(starting_idx),1737,len(feature_list)])
+	scan_line_tensor = torch.randn([len(starting_idx),min_pt_count,len(feature_list)])
 	# Loop thru scan lines
 	for line,line_idx in enumerate(starting_idx):
 	        # Fill the appropriate line in scan_line_tensor
 	        name = first_return_df_valid.iloc[line_idx].name
 	        try:
 	            scan_line_tensor[line,:,:] = torch.Tensor(first_return_df_valid.loc\
-	                                      [name:name+1736][feature_list].values)
+	                                      [name:name+min_pt_count-1][feature_list].values)
 	        except RuntimeError:
 	            print("Not enough points in line {}".format(line))
 	return scan_line_tensor
