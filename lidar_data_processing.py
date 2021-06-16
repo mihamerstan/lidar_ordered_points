@@ -123,14 +123,14 @@ def create_scan_line_tensor(file_dir=file_dir,filename=filename,\
 	starting_idx = [x for x in starting_idx if str(x) != 'nan']
 
 	# Create Tensor
-	scan_line_tensor = torch.randn([len(starting_idx),1737,len(feature_list)])
+	scan_line_tensor = torch.randn([len(starting_idx),min_pt_count,len(feature_list)])
 	# Loop thru scan lines
 	for line,line_idx in enumerate(starting_idx):
 	        # Fill the appropriate line in scan_line_tensor
 	        name = first_return_df_valid.iloc[line_idx].name
 	        try:
 	            scan_line_tensor[line,:,:] = torch.Tensor(first_return_df_valid.loc\
-	                                      [name:name+1736][feature_list].values)
+	                                      [name:name+min_pt_count-1][feature_list].values)
 	        except RuntimeError:
 	            print("Not enough points in line {}".format(line))
 	return scan_line_tensor
